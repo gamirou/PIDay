@@ -1,26 +1,47 @@
 let canvas, ctx;
-
 let WIDTH, HEIGHT;
 
-function init() {
-    let canvas_supported = !!window.HTMLCanvasElement;
+const square = {
+    length : 0,
+    offset : 100,
+    x : 100,
+    y : 100,
+}
 
-    if (canvas_supported) {
+function init() {
+    if (!!window.HTMLCanvasElement) {
         canvas = document.getElementById('c');
         ctx = canvas.getContext('2d');
 
         onresize();
-        console.log(WIDTH, HEIGHT);
+        square.length = HEIGHT - square.offset * 2;
 
         window.addEventListener("resize", onresize, false);
+
+        render();
     }
+}
+
+function render() {
+    window.requestAnimationFrame(render);
+
+    // Drawing the square
+    ctx.strokeStyle = 'red';
+    ctx.strokeRect(square.x, square.y, square.length, square.length);
+
+    // Drawing the circle
+    ctx.strokeStyle = 'blue';
+    ctx.beginPath();
+    ctx.arc(square.x + square.length / 2, square.y + square.length / 2, square.length/2, 0, 2*Math.PI);
+    ctx.stroke();
+    ctx.closePath();
 }
 
 
 // Draws a border
 function redraw() {
     ctx.strokeStyle = 'blue';
-    ctx.lineWidth = '5';
+    ctx.lineWidth = '2';
     ctx.strokeRect(0, 0, window.innerWidth, window.innerHeight);
 }
 
@@ -28,7 +49,7 @@ function redraw() {
 // Resets the canvas dimensions to match window,
 // then draws the new borders accordingly.
 function onresize() {
-    WIDTH = canvas.width = window.innerWidth - 10;
-    HEIGHT = canvas.height = window.innerHeight - 10;
+    WIDTH = canvas.width = window.innerWidth;
+    HEIGHT = canvas.height = window.innerHeight;
     redraw();
 }
