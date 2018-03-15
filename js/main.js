@@ -5,8 +5,8 @@ let particles = [];
 
 const stats = {
     particles: {
-        in_square: 0,
-        out_square: 0
+        in_circle: 0,
+        total: 0
     },
 
     real_pi: Math.PI,
@@ -60,27 +60,36 @@ function render() {
     ctx.closePath();
 
     // Drawing message
-    text(stats.message, WIDTH/2, square.offset/2, "white", "center", "30px");
+    text(stats.message, WIDTH/2, square.offset/2, "white", "center", 70);
+    text(stats.approx_pi, WIDTH/2, HEIGHT - square.offset/2, "white", "center", 60);
 
     if (Object.values(stats.particles).reduce((a, b) => a + b, 0) <= stats.max_number_of_particles) {
         particles.push(new Particle());
     }
 
 
+    // Visual animation
     if (particles.length != 0) {
         for (let particle of particles) {
             particle.draw();
             particle.lifespan -= 1;
 
-            if (particle.inSquare()) stats.particles.in_square++;
-            else stats.particles.out_square++;
+            if (!particle.checked) {
+                if (particle.inCircle()) stats.particles.in_circle++;
+                stats.particles.total++;
+                particle.checked;
+            }
 
             if (particle.lifespan < 0) {
                 particles.splice(particles.indexOf(particle), 1);
             }
         }
+
+        stats.approx_pi = 4 * (stats.particles.in_circle/stats.particles.total);
     } else {
-        console.log("Done!")
+        // After finishing
+        text("π", WIDTH/2, HEIGHT/2-offset, "forestgreen", "center", square.offset); 
+
     }
 }
 

@@ -3,12 +3,13 @@ class Particle {
         this.x = random(square.x, square.x + square.length);
         this.y = random(square.y, square.y + square.length);
 
+        this.checked = false;
         this.lifespan = 10;
     }
 
-    inSquare() {
+    inCircle() {
         let d = dist(this.x, this.y, square.x + square.length/2, square.y + square.length/2);
-        return (d > square.length/2);
+        return (d < square.length/2);
     }
 
     draw() {
