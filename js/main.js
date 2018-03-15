@@ -88,8 +88,9 @@ function render() {
         stats.approx_pi = 4 * (stats.particles.in_circle/stats.particles.total);
     } else {
         // After finishing
-        text("π", WIDTH/2, HEIGHT/2-offset, "forestgreen", "center", square.offset); 
-
+        text("π", WIDTH/2, HEIGHT/2-square.offset/2, "forestgreen", "center", square.offset);
+        text("Real π: " + stats.real_pi, WIDTH/2, HEIGHT/2, "darkgreen", "center", 30);
+        text("Difference: " + (stats.real_pi - stats.approx_pi), WIDTH/2, HEIGHT/2 + square.offset/2, "darkgreen", "center", 30);
     }
 }
 
