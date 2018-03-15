@@ -4,17 +4,22 @@ let WIDTH, HEIGHT;
 let particles = [];
 
 const stats = {
-    particles: 0,
+    particles: {
+        in_square: 0,
+        out_square: 0
+    },
+
     real_pi: Math.PI,
     approx_pi: 0,
-    max_number_of_particles: 1000
+    max_number_of_particles: 10000,
+    message : "π being processed"
 }
 
 const square = {
     length : 0,
-    offset : 100,
-    x : 100,
-    y : 100,
+    offset : 150,
+    x : 150,
+    y : 150,
 }
 
 function init() {
@@ -34,9 +39,14 @@ function init() {
 function render() {
     window.requestAnimationFrame(render);
 
+    // Clearing rect
     ctx.beginPath();
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     ctx.closePath();
+
+    // Background
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
     // Drawing the square
     ctx.strokeStyle = 'darkgreen';
@@ -49,15 +59,28 @@ function render() {
     ctx.stroke();
     ctx.closePath();
 
-    particles.push(new Particle());
+    // Drawing message
+    text(stats.message, WIDTH/2, square.offset/2, "white", "center", "30px");
 
-    for (let particle of particles) {
-        particle.draw();
-        particle.lifespan -= 0.1;
+    if (Object.values(stats.particles).reduce((a, b) => a + b, 0) <= stats.max_number_of_particles) {
+        particles.push(new Particle());
+    }
 
-        if (particle.lifespan < 0) {
-            particles.splice(particles.indexOf(particle), 1);
+
+    if (particles.length != 0) {
+        for (let particle of particles) {
+            particle.draw();
+            particle.lifespan -= 1;
+
+            if (particle.inSquare()) stats.particles.in_square++;
+            else stats.particles.out_square++;
+
+            if (particle.lifespan < 0) {
+                particles.splice(particles.indexOf(particle), 1);
+            }
         }
+    } else {
+        console.log("Done!")
     }
 }
 
@@ -76,7 +99,7 @@ function redraw() {
 // Resets the canvas dimensions to match window,
 // then draws the new borders accordingly.
 function onresize() {
-    WIDTH = canvas.width = window.innerWidth;
+    WIDTH = canvas.width = window.innerHeight;
     HEIGHT = canvas.height = window.innerHeight;
     redraw();
 }
@@ -84,4 +107,23 @@ function onresize() {
 
 function dist(x1, y1, x2, y2) {
     return (Math.sqrt(Math.pow(x2-x1, 2) + Math.pow(y2-y1, 2)))
+}
+
+
+/**
+    Displays text with a given position, align and the size
+    *** t - {String} - The text
+    *** x, y - {Number} - X and y coordinates
+    *** c - {String} - Colour of the text
+    *** align - {String} - It aligns the text to center, left etc.
+    *** size - {Number} - Size of the text
+*/
+function text(t, x, y, c, align, size) {
+    if (align) ctx.textAlign = align;
+    if (!size) {
+        size = 25;
+    }
+    ctx.font = "bold " +size+ "px Calibri";
+    ctx.fillStyle = c;
+    ctx.fillText(t,x,y);
 }

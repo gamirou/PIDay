@@ -12,9 +12,9 @@ class Particle {
     }
 
     draw() {
-        ctx.strokeStyle = "pink";
+        ctx.strokeStyle = "white";
         ctx.beginPath();
-        ctx.arc(this.x, this.y, 3, 0, 2*Math.PI);
+        ctx.arc(this.x, this.y, 2.4, 0, 2*Math.PI);
         ctx.stroke();
         ctx.closePath();
     }
